@@ -16,10 +16,10 @@
 
 package androidx.constraintlayout.compose
 
-import android.annotation.SuppressLint
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
+//import android.annotation.SuppressLint
+//import android.os.Handler
+//import android.os.Looper
+//import android.util.Log
 import androidx.annotation.FloatRange
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationSpec
@@ -48,8 +48,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.*
-import androidx.compose.ui.util.fastForEach
-import androidx.compose.ui.util.fastForEachIndexed
 import androidx.constraintlayout.core.parser.CLKey
 import androidx.constraintlayout.core.parser.CLObject
 import androidx.constraintlayout.core.parser.CLParser
@@ -66,7 +64,11 @@ import androidx.constraintlayout.core.widgets.ConstraintWidget.DimensionBehaviou
 import androidx.constraintlayout.core.widgets.analyzer.BasicMeasure
 import androidx.constraintlayout.core.widgets.analyzer.BasicMeasure.Measure.TRY_GIVEN_DIMENSIONS
 import androidx.constraintlayout.core.widgets.analyzer.BasicMeasure.Measure.USE_GIVEN_DIMENSIONS
+import fastForEach
+import fastForEachIndexed
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.launch
 import org.intellij.lang.annotations.Language
 import java.lang.StringBuilder
 import java.util.*
@@ -150,13 +152,10 @@ internal fun rememberConstraintLayoutMeasurePolicy(
 private class ConstraintSetForInlineDsl(
     val scope: ConstraintLayoutScope
 ) : ConstraintSet, RememberObserver {
-    private var handler: Handler? = null
+    private var mainScope = MainScope()
     private val observer = SnapshotStateObserver {
-        if (Looper.myLooper() == Looper.getMainLooper()) {
+        mainScope.launch {
             it()
-        } else {
-            val h = handler ?: Handler(Looper.getMainLooper()).also { h -> handler = h }
-            h.post(it)
         }
     }
 
@@ -1421,7 +1420,7 @@ interface ConstraintSet {
     fun isDirty(measurables: List<Measurable>): Boolean = true
 }
 
-@SuppressLint("ComposableNaming")
+//@SuppressLint("ComposableNaming")
 @Composable
 fun ConstraintSet(@Language("json5") content : String,
                   @Language("json5") overrideVariables: String? = null) : ConstraintSet {
@@ -1451,7 +1450,7 @@ open class EditableJSONLayout(@Language("json5") content: String) :
         try {
             onNewContent(currentContent)
             if (debugName != null) {
-                val mainHandler = Handler(Looper.getMainLooper())
+                val mainScope = MainScope()
                 val callback = object : RegistryCallback {
 
 
@@ -1459,7 +1458,7 @@ open class EditableJSONLayout(@Language("json5") content: String) :
                         if (content == null) {
                             return
                         }
-                        mainHandler.post {
+                        mainScope.launch {
                             try {
                                 onNewContent(content)
                             } catch (e : Exception) {}
@@ -1467,7 +1466,7 @@ open class EditableJSONLayout(@Language("json5") content: String) :
                     }
 
                     override fun onProgress(progress: Float) {
-                        mainHandler.post {
+                        mainScope.launch {
                             try {
                                 onNewProgress(progress)
                             } catch (e : Exception) {}
@@ -1475,7 +1474,7 @@ open class EditableJSONLayout(@Language("json5") content: String) :
                     }
 
                     override fun onDimensions(width: Int, height: Int) {
-                        mainHandler.post {
+                        mainScope.launch {
                             try {
                                 onNewDimensions(width, height)
                             } catch (e : Exception) {}
@@ -1491,7 +1490,7 @@ open class EditableJSONLayout(@Language("json5") content: String) :
                     }
 
                     override fun setLayoutInformationMode(mode: Int) {
-                        mainHandler.post {
+                        mainScope.launch {
                             try {
                                 onLayoutInformation(mode)
                             } catch (e : Exception) {}
@@ -1503,7 +1502,7 @@ open class EditableJSONLayout(@Language("json5") content: String) :
                     }
 
                     override fun setDrawDebug(debugMode: Int) {
-                        mainHandler.post {
+                        mainScope.launch {
                             try {
                                 onDrawDebug(debugMode)
                             } catch (e : Exception) {}
@@ -1819,11 +1818,11 @@ internal open class Measurer : BasicMeasure.Measurer, DesignInfoProvider {
         if (measurable !is Measurable) return
 
         if (DEBUG) {
-            Log.d(
-                "CCL",
-                "Measuring ${measurable.layoutId} with: " +
-                    constraintWidget.toDebugString() + "\n" + measure.toDebugString()
-            )
+//            Log.d(
+//                "CCL",
+//                "Measuring ${measurable.layoutId} with: " +
+//                    constraintWidget.toDebugString() + "\n" + measure.toDebugString()
+//            )
         }
 
         var constraints: Constraints
@@ -1866,15 +1865,15 @@ internal open class Measurer : BasicMeasure.Measurer, DesignInfoProvider {
             constraintWidget.mMatchConstraintDefaultHeight != MATCH_CONSTRAINT_SPREAD
         ) {
             if (DEBUG) {
-                Log.d("CCL", "Measuring ${measurable.layoutId} with $constraints")
+//                Log.d("CCL", "Measuring ${measurable.layoutId} with $constraints")
             }
             val placeable = measurable.measure(constraints).also { placeables[measurable] = it }
             constraintWidget.isMeasureRequested = false
             if (DEBUG) {
-                Log.d(
-                    "CCL",
-                    "${measurable.layoutId} is size ${placeable.width} ${placeable.height}"
-                )
+//                Log.d(
+//                    "CCL",
+//                    "${measurable.layoutId} is size ${placeable.width} ${placeable.height}"
+//                )
             }
 
             val coercedWidth = placeable.width.coerceIn(
@@ -1907,7 +1906,7 @@ internal open class Measurer : BasicMeasure.Measurer, DesignInfoProvider {
             }
             if (remeasure) {
                 if (DEBUG) {
-                    Log.d("CCL", "Remeasuring coerced ${measurable.layoutId} with $constraints")
+//                    Log.d("CCL", "Remeasuring coerced ${measurable.layoutId} with $constraints")
                 }
                 measurable.measure(constraints).also { placeables[measurable] = it }
                 constraintWidget.isMeasureRequested = false
@@ -2010,10 +2009,10 @@ internal open class Measurer : BasicMeasure.Measurer, DesignInfoProvider {
         }
         MATCH_CONSTRAINT -> {
             if (DEBUG) {
-                Log.d("CCL", "Measure strategy ${measureStrategy}")
-                Log.d("CCL", "DW ${matchConstraintDefaultDimension}")
-                Log.d("CCL", "ODR ${otherDimensionResolved}")
-                Log.d("CCL", "IRH ${currentDimensionResolved}")
+//                Log.d("CCL", "Measure strategy ${measureStrategy}")
+//                Log.d("CCL", "DW ${matchConstraintDefaultDimension}")
+//                Log.d("CCL", "ODR ${otherDimensionResolved}")
+//                Log.d("CCL", "IRH ${currentDimensionResolved}")
             }
             val useDimension = currentDimensionResolved ||
                 (measureStrategy == TRY_GIVEN_DIMENSIONS ||
@@ -2022,7 +2021,7 @@ internal open class Measurer : BasicMeasure.Measurer, DesignInfoProvider {
                     matchConstraintDefaultDimension != MATCH_CONSTRAINT_WRAP ||
                     otherDimensionResolved)
             if (DEBUG) {
-                Log.d("CCL", "UD $useDimension")
+//                Log.d("CCL", "UD $useDimension")
             }
             outConstraints[0] = if (useDimension) dimension else 0
             outConstraints[1] = if (useDimension) dimension else rootMaxConstraint
@@ -2090,11 +2089,11 @@ internal open class Measurer : BasicMeasure.Measurer, DesignInfoProvider {
                 child.debugName =
                     (child.companionWidget as? Measurable)?.layoutId?.toString() ?: "NOTAG"
             }
-            Log.d("CCL", "ConstraintLayout is asked to measure with $constraints")
-            Log.d("CCL", root.toDebugString())
-            for (child in root.children) {
-                Log.d("CCL", child.toDebugString())
-            }
+//            Log.d("CCL", "ConstraintLayout is asked to measure with $constraints")
+//            Log.d("CCL", root.toDebugString())
+//            for (child in root.children) {
+//                Log.d("CCL", child.toDebugString())
+//            }
         }
 
         // No need to set sizes and size modes as we passed them to the state above.
@@ -2109,18 +2108,18 @@ internal open class Measurer : BasicMeasure.Measurer, DesignInfoProvider {
             val currentHeight = placeable?.height
             if (child.width != currentWidth || child.height != currentHeight) {
                 if (DEBUG) {
-                    Log.d(
-                        "CCL",
-                        "Final measurement for ${measurable.layoutId} " +
-                            "to confirm size ${child.width} ${child.height}"
-                    )
+//                    Log.d(
+//                        "CCL",
+//                        "Final measurement for ${measurable.layoutId} " +
+//                            "to confirm size ${child.width} ${child.height}"
+//                    )
                 }
                 measurable.measure(Constraints.fixed(child.width, child.height))
                     .also { placeables[measurable] = it }
             }
         }
         if (DEBUG) {
-            Log.d("CCL", "ConstraintLayout is at the end ${root.width} ${root.height}")
+//            Log.d("CCL", "ConstraintLayout is at the end ${root.width} ${root.height}")
         }
         return IntSize(root.width, root.height)
     }
@@ -2317,11 +2316,11 @@ internal open class Measurer : BasicMeasure.Measurer, DesignInfoProvider {
                         )
                     }
                     "image" -> {
-                        Image(
-                            modifier = Modifier.layoutId(id),
-                            painter = painterResource(id = android.R.drawable.ic_menu_gallery),
-                            contentDescription = "Placeholder Image"
-                        )
+//                        Image(
+//                            modifier = Modifier.layoutId(id),
+//                            painter = painterResource(id = android.R.drawable.ic_menu_gallery),
+//                            contentDescription = "Placeholder Image"
+//                        )
                     }
                 }
             }

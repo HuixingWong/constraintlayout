@@ -16,8 +16,8 @@
 
 package androidx.constraintlayout.compose
 
-import android.annotation.SuppressLint
-import android.graphics.Matrix
+//import android.annotation.SuppressLint
+//import android.graphics.Matrix
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.tween
@@ -443,7 +443,7 @@ class JSONMotionScene(@Language("json5") content: String) : EditableJSONLayout(c
 
 }
 
-@SuppressLint("ComposableNaming")
+//@SuppressLint("ComposableNaming")
 @Composable
 fun MotionScene(@Language("json5") content: String): MotionScene {
     return remember(content) {
@@ -530,7 +530,7 @@ interface Transition {
     fun getEndConstraintSetId(): String
 }
 
-@SuppressLint("ComposableNaming")
+//@SuppressLint("ComposableNaming")
 @Composable
 fun Transition(@Language("json5") content: String): androidx.constraintlayout.compose.Transition? {
     val transition = remember(content) {
@@ -872,13 +872,13 @@ internal class MotionMeasurer : Measurer() {
         drawFrame(startFrame, pathEffect, color)
         drawFrame(endFrame, pathEffect, color)
         var numKeyPositions = transition.getNumberKeyPositions(startFrame)
-        var debugRender = MotionRenderDebug(23f);
+//        var debugRender = MotionRenderDebug(23f);
 
-        debugRender.draw(
-            drawContext.canvas.nativeCanvas, transition.getMotion(startFrame.widget.stringId),
-            1000, Motion.DRAW_PATH_BASIC,
-            parentWidth.toInt(), parentHeight.toInt()
-        )
+//        debugRender.draw(
+//            drawContext.canvas.nativeCanvas, transition.getMotion(startFrame.widget.stringId),
+//            1000, Motion.DRAW_PATH_BASIC,
+//            parentWidth.toInt(), parentHeight.toInt()
+//        )
         if (numKeyPositions == 0) {
 //            drawLine(
 //                start = Offset(startFrame.centerX(), startFrame.centerY()),
@@ -938,61 +938,61 @@ internal class MotionMeasurer : Measurer() {
         pathEffect: PathEffect,
         color: Color
     ) {
-        if (frame.isDefaultTransform) {
-            var drawStyle = Stroke(width = 3f, pathEffect = pathEffect)
-            drawRect(
-                color, Offset(frame.left.toFloat(), frame.top.toFloat()),
-                Size(frame.width().toFloat(), frame.height().toFloat()), style = drawStyle
-            )
-        } else {
-            var matrix = Matrix()
-            if (!frame.rotationZ.isNaN()) {
-                matrix.preRotate(frame.rotationZ, frame.centerX(), frame.centerY())
-            }
-            var scaleX = if (frame.scaleX.isNaN()) 1f else frame.scaleX
-            var scaleY = if (frame.scaleY.isNaN()) 1f else frame.scaleY
-            matrix.preScale(
-                scaleX,
-                scaleY,
-                frame.centerX(),
-                frame.centerY()
-            )
-            var points = floatArrayOf(
-                frame.left.toFloat(), frame.top.toFloat(),
-                frame.right.toFloat(), frame.top.toFloat(),
-                frame.right.toFloat(), frame.bottom.toFloat(),
-                frame.left.toFloat(), frame.bottom.toFloat()
-            )
-            matrix.mapPoints(points)
-            drawLine(
-                start = Offset(points[0], points[1]),
-                end = Offset(points[2], points[3]),
-                color = color,
-                strokeWidth = 3f,
-                pathEffect = pathEffect
-            )
-            drawLine(
-                start = Offset(points[2], points[3]),
-                end = Offset(points[4], points[5]),
-                color = color,
-                strokeWidth = 3f,
-                pathEffect = pathEffect
-            )
-            drawLine(
-                start = Offset(points[4], points[5]),
-                end = Offset(points[6], points[7]),
-                color = color,
-                strokeWidth = 3f,
-                pathEffect = pathEffect
-            )
-            drawLine(
-                start = Offset(points[6], points[7]),
-                end = Offset(points[0], points[1]),
-                color = color,
-                strokeWidth = 3f,
-                pathEffect = pathEffect
-            )
-        }
+//        if (frame.isDefaultTransform) {
+//            var drawStyle = Stroke(width = 3f, pathEffect = pathEffect)
+//            drawRect(
+//                color, Offset(frame.left.toFloat(), frame.top.toFloat()),
+//                Size(frame.width().toFloat(), frame.height().toFloat()), style = drawStyle
+//            )
+//        } else {
+//            var matrix = Matrix()
+//            if (!frame.rotationZ.isNaN()) {
+//                matrix.preRotate(frame.rotationZ, frame.centerX(), frame.centerY())
+//            }
+//            var scaleX = if (frame.scaleX.isNaN()) 1f else frame.scaleX
+//            var scaleY = if (frame.scaleY.isNaN()) 1f else frame.scaleY
+//            matrix.preScale(
+//                scaleX,
+//                scaleY,
+//                frame.centerX(),
+//                frame.centerY()
+//            )
+//            var points = floatArrayOf(
+//                frame.left.toFloat(), frame.top.toFloat(),
+//                frame.right.toFloat(), frame.top.toFloat(),
+//                frame.right.toFloat(), frame.bottom.toFloat(),
+//                frame.left.toFloat(), frame.bottom.toFloat()
+//            )
+//            matrix.mapPoints(points)
+//            drawLine(
+//                start = Offset(points[0], points[1]),
+//                end = Offset(points[2], points[3]),
+//                color = color,
+//                strokeWidth = 3f,
+//                pathEffect = pathEffect
+//            )
+//            drawLine(
+//                start = Offset(points[2], points[3]),
+//                end = Offset(points[4], points[5]),
+//                color = color,
+//                strokeWidth = 3f,
+//                pathEffect = pathEffect
+//            )
+//            drawLine(
+//                start = Offset(points[4], points[5]),
+//                end = Offset(points[6], points[7]),
+//                color = color,
+//                strokeWidth = 3f,
+//                pathEffect = pathEffect
+//            )
+//            drawLine(
+//                start = Offset(points[6], points[7]),
+//                end = Offset(points[0], points[1]),
+//                color = color,
+//                strokeWidth = 3f,
+//                pathEffect = pathEffect
+//            )
+//        }
     }
 
     fun getCustomColor(id: String, name: String): Color {

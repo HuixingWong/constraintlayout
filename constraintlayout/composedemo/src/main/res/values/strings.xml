@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ Copyright (C) 2021 The Android Open Source Project
   ~
@@ -14,18 +13,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="androidx.constraintlayout.compose">
 
-    <application
-        android:debuggable="false"
-        tools:ignore="HardcodedDebugMode"
-        tools:replace="android:debuggable">
-
-        <activity
-            android:name="androidx.activity.ComponentActivity" />
-        <uses-library android:name="android.test.runner"
-            android:required="false" />
-    </application>
-</manifest>
+<resources>
+    <string name="app_name">composeDemo</string>
+</resources>
