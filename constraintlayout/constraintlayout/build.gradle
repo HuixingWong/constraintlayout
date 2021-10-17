@@ -1,5 +1,5 @@
 plugins {
-    id 'androidx.build.publishing'
+//    id 'androidx.build.publishing'
     id 'com.android.library'
 }
 
