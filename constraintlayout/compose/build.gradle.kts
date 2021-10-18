@@ -11,7 +11,9 @@ group = "com.github.Huixing"
 version = "1.0"
 
 kotlin {
-    android()
+    android {
+        publishLibraryVariants("release", "debug")
+    }
     jvm("desktop") {
         compilations.all {
             kotlinOptions.jvmTarget = "11"
@@ -105,6 +107,11 @@ afterEvaluate {
             create<MavenPublication>("release") {
                 groupId = "com.github.Huixing"
                 artifactId = "constraint"
+                version = "1.0"
+            }
+            create<MavenPublication>("debug") {
+                groupId = "com.github.Huixing"
+                artifactId = "constraint-debug"
                 version = "1.0"
             }
         }
